@@ -1,17 +1,20 @@
 {
-  "name": "presight-execise",
+  "name": "presight-exercise",
   "version": "1.0.0",
-  "repository": "",
-  "author": "",
-  "license": "MIT",
+  "private": true,
   "workspaces": [
     "client",
     "server"
   ],
   "scripts": {
-    "start": "lerna run start"
+    "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w server && npm run build -w client",
+    "seed": "npm run seed -w server",
+    "test": "npm run test -w server && npm run test -w client"
   },
   "devDependencies": {
-    "lerna": "~8.2.1"
+    "concurrently": "^9.1.2"
   }
 }

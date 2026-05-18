@@ -18,7 +18,7 @@ export function FacetSection({ title, items, selected, onToggle, onClear, isLoad
 
   return (
     <section aria-label={`${title} filters`}>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-3 h-7">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-1.5 p-0 bg-transparent border-none cursor-pointer text-text-muted hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-accent outline-offset-2"

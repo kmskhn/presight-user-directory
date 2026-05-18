@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Users, Sun, Moon } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, useCallback, useEffect } from 'react';
@@ -27,22 +27,21 @@ function Header({ theme, onToggleTheme }: HeaderProps) {
   const { filters, setFilters } = useFilterParams();
   const [searchInput, setSearchInput] = useState(filters.search);
   const { debouncedValue: debouncedSearch, isPending } = useDebounce(searchInput, 300);
+  const location = useLocation();
 
   // Sync debounced value to URL — in useEffect, not during render
   useEffect(() => {
     if (debouncedSearch !== filters.search) {
       setFilters({ search: debouncedSearch });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+  }, [debouncedSearch, filters.search, setFilters]);
 
   // Sync search input when URL changes externally (e.g., clear all filters)
   useEffect(() => {
     if (filters.search !== searchInput && !isPending) {
       setSearchInput(filters.search);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.search]);
+  }, [filters.search, searchInput, isPending]);
 
   const handleSearchChange = useCallback((val: string) => {
     setSearchInput(val);
@@ -50,18 +49,20 @@ function Header({ theme, onToggleTheme }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-border flex items-center justify-between px-6 py-4" role="banner">
-      <a href="/" className="flex items-center gap-3 text-text-primary text-xl font-semibold no-underline" aria-label="Presight home">
+      <Link to="/" className="flex items-center gap-3 text-text-primary text-xl font-semibold no-underline" aria-label="Presight home">
         <Users size={22} color="var(--color-accent)" aria-hidden="true" />
         <span>Presight</span>
-      </a>
+      </Link>
 
       <div className="flex items-center gap-4 w-full max-w-[460px]">
-        <div className="flex-1">
-          <SearchInput value={searchInput} onChange={handleSearchChange} isPending={isPending} />
-        </div>
+        {location.pathname === '/' && (
+          <div className="flex-1">
+            <SearchInput value={searchInput} onChange={handleSearchChange} isPending={isPending} />
+          </div>
+        )}
         <button
           onClick={onToggleTheme}
-          className="flex items-center justify-center w-9 h-9 rounded-full bg-surface-raised border border-border text-text-secondary hover:text-text-primary hover:scale-105 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-accent outline-offset-2 shrink-0"
+          className="ml-auto flex items-center justify-center w-9 h-9 rounded-full bg-surface-raised border border-border text-text-secondary hover:text-text-primary hover:scale-105 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-accent outline-offset-2 shrink-0"
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
         >

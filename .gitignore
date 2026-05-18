@@ -36,3 +36,8 @@ yarn-error.log*
 *.db-wal
 data/
 server/data/
+
+# TypeScript & Build Artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts

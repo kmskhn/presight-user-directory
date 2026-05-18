@@ -41,6 +41,7 @@ export function UserList({
     estimateSize: () => 96,
     overscan: 5,
     gap: 8,
+    getItemKey: (index) => users[index]?.id ?? `loader-${index}`,
   });
 
   const virtualItems = virtualizer.getVirtualItems();

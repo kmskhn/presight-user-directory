@@ -27,10 +27,10 @@ export function FilterSidebar({
   onClose,
 }: FilterSidebarProps) {
   return (
-    <aside className={`md:flex md:flex-col p-6 border-r border-border md:bg-surface ${isOpen ? 'fixed inset-0 z-50 flex flex-col bg-bg border-t border-border mt-[60px] h-[calc(100dvh-60px)] overflow-y-auto' : 'hidden'}`} aria-label="Filter sidebar">
-      <div className="flex items-center justify-between mb-4">
+    <aside className={`md:flex md:flex-col border-r border-border md:bg-surface md:h-[calc(100dvh-73px)] md:overflow-y-auto ${isOpen ? 'fixed inset-0 z-50 flex flex-col bg-bg border-t border-border mt-[60px] h-[calc(100dvh-60px)] overflow-y-auto' : 'hidden'}`} aria-label="Filter sidebar">
+      <div className="sticky top-0 z-10 flex items-center justify-between px-6 pt-6 pb-4 bg-surface-raised/95 backdrop-blur-md border-b border-border shadow-sm">
         <p className="text-[11px] font-semibold tracking-wider uppercase text-text-muted m-0">Filters</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 h-7">
           {hasActiveFilters && (
             <button
               id="sidebar-clear-btn"
@@ -50,28 +50,28 @@ export function FilterSidebar({
         </div>
       </div>
 
-      <hr className="border-none h-[1px] bg-border my-6" />
+      <div className="px-6 pt-5 pb-6">
+        <FacetSection
+          title="Nationality"
+          items={facets.nationalities}
+          selected={filters.nationalities}
+          onToggle={onToggleNationality}
+          onClear={() => onClearCategory('nationality')}
+          isLoading={isLoading}
+          idPrefix="nat"
+        />
+        <hr className="border-none h-[1px] bg-border my-6" />
 
-      <FacetSection
-        title="Nationality"
-        items={facets.nationalities}
-        selected={filters.nationalities}
-        onToggle={onToggleNationality}
-        onClear={() => onClearCategory('nationality')}
-        isLoading={isLoading}
-        idPrefix="nat"
-      />
-      <hr className="border-none h-[1px] bg-border my-6" />
-
-      <FacetSection
-        title="Hobby"
-        items={facets.hobbies}
-        selected={filters.hobbies}
-        onToggle={onToggleHobby}
-        onClear={() => onClearCategory('hobby')}
-        isLoading={isLoading}
-        idPrefix="hobby"
-      />
+        <FacetSection
+          title="Hobby"
+          items={facets.hobbies}
+          selected={filters.hobbies}
+          onToggle={onToggleHobby}
+          onClear={() => onClearCategory('hobby')}
+          isLoading={isLoading}
+          idPrefix="hobby"
+        />
+      </div>
     </aside>
   );
 }

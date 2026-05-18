@@ -130,7 +130,7 @@ export function DirectoryPage() {
             />
           </div>
           <span className="text-sm font-medium text-text-secondary whitespace-nowrap ml-4" aria-live="polite" aria-atomic="true">
-            {isLoading ? '…' : `${totalDisplayed.toLocaleString()} shown`}
+            {isLoading ? '…' : `${totalDisplayed.toLocaleString()} records shown`}
           </span>
         </div>
 

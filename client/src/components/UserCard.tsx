@@ -10,7 +10,7 @@ export const UserCard = memo(function UserCard({ user }: UserCardProps) {
   const overflowCount = user.hobbies.length - 2;
 
   return (
-    <article className="grid grid-cols-[52px_1fr] gap-3.5 items-center p-4 mx-5 bg-surface/50 border border-border/50 rounded-xl transition-all duration-200 hover:border-border hover:shadow-lg hover:-translate-y-0.5 group" role="listitem">
+    <article className="grid grid-cols-[52px_1fr] gap-3.5 items-center p-4 mx-5 bg-surface border border-border rounded-xl transition-all duration-200 hover:border-accent hover:shadow-lg hover:-translate-y-0.5 group shadow-sm" role="listitem">
       <img
         src={user.avatar}
         alt={`Avatar of ${user.firstName} ${user.lastName}`}

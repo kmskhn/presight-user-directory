@@ -9,7 +9,7 @@ interface SearchInputProps {
 
 export function SearchInput({ value, onChange, isPending = false }: SearchInputProps) {
   return (
-    <div className="relative w-full">
+    <div className="ml-2 relative w-full">
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted flex items-center justify-center pointer-events-none" aria-hidden="true">
         <Search size={16} strokeWidth={2} />
       </span>

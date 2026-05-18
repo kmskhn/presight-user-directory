@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Users } from 'lucide-react';
+import { Users, Sun, Moon } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, useCallback, useEffect } from 'react';
 import { DirectoryPage } from './DirectoryPage.js';
@@ -18,7 +18,12 @@ const queryClient = new QueryClient({
   },
 });
 
-function Header() {
+interface HeaderProps {
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+}
+
+function Header({ theme, onToggleTheme }: HeaderProps) {
   const { filters, setFilters } = useFilterParams();
   const [searchInput, setSearchInput] = useState(filters.search);
   const { debouncedValue: debouncedSearch, isPending } = useDebounce(searchInput, 300);
@@ -50,17 +55,47 @@ function Header() {
         <span>Presight</span>
       </a>
 
-      <div className="w-full max-w-[400px]">
-        <SearchInput value={searchInput} onChange={handleSearchChange} isPending={isPending} />
+      <div className="flex items-center gap-4 w-full max-w-[460px]">
+        <div className="flex-1">
+          <SearchInput value={searchInput} onChange={handleSearchChange} isPending={isPending} />
+        </div>
+        <button
+          onClick={onToggleTheme}
+          className="flex items-center justify-center w-9 h-9 rounded-full bg-surface-raised border border-border text-text-secondary hover:text-text-primary hover:scale-105 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-accent outline-offset-2 shrink-0"
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+        >
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
       </div>
     </header>
   );
 }
 
 function AppInner() {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+    return 'light';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-bg text-text-primary font-sans">
-      <Header />
+      <Header theme={theme} onToggleTheme={toggleTheme} />
       <Routes>
         <Route path="/" element={<DirectoryPage />} />
         <Route path="*" element={<NotFoundPage />} />

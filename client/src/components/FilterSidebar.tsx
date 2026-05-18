@@ -27,7 +27,7 @@ export function FilterSidebar({
   onClose,
 }: FilterSidebarProps) {
   return (
-    <aside className={`md:flex md:flex-col p-6 border-r border-border md:bg-bg/50 ${isOpen ? 'fixed inset-0 z-50 flex flex-col bg-bg border-t border-border mt-[60px] h-[calc(100dvh-60px)] overflow-y-auto' : 'hidden'}`} aria-label="Filter sidebar">
+    <aside className={`md:flex md:flex-col p-6 border-r border-border md:bg-surface ${isOpen ? 'fixed inset-0 z-50 flex flex-col bg-bg border-t border-border mt-[60px] h-[calc(100dvh-60px)] overflow-y-auto' : 'hidden'}`} aria-label="Filter sidebar">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[11px] font-semibold tracking-wider uppercase text-text-muted m-0">Filters</p>
         <div className="flex items-center gap-2">

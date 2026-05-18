@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Users, Sun, Moon } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { DirectoryPage } from './DirectoryPage.js';
 import { NotFoundPage } from './NotFoundPage.js';
 import { SearchInput } from '../components/SearchInput.js';
@@ -29,19 +29,23 @@ function Header({ theme, onToggleTheme }: HeaderProps) {
   const { debouncedValue: debouncedSearch, isPending } = useDebounce(searchInput, 300);
   const location = useLocation();
 
-  // Sync debounced value to URL — in useEffect, not during render
+  const lastPushedSearch = useRef(filters.search);
+
+  // Sync internal state when URL changes externally (e.g., Clear all filters)
   useEffect(() => {
-    if (debouncedSearch !== filters.search) {
+    if (filters.search !== lastPushedSearch.current) {
+      setSearchInput(filters.search);
+      lastPushedSearch.current = filters.search;
+    }
+  }, [filters.search]);
+
+  // Push to URL when debounced input changes
+  useEffect(() => {
+    if (debouncedSearch !== lastPushedSearch.current) {
+      lastPushedSearch.current = debouncedSearch;
       setFilters({ search: debouncedSearch });
     }
-  }, [debouncedSearch, filters.search, setFilters]);
-
-  // Sync search input when URL changes externally (e.g., clear all filters)
-  useEffect(() => {
-    if (filters.search !== searchInput && !isPending) {
-      setSearchInput(filters.search);
-    }
-  }, [filters.search, searchInput, isPending]);
+  }, [debouncedSearch, setFilters]);
 
   const handleSearchChange = useCallback((val: string) => {
     setSearchInput(val);

@@ -17,7 +17,7 @@ export function SearchInput({ value, onChange, isPending = false }: SearchInputP
         id="search-input"
         type="search"
         className="w-full bg-surface-raised border border-border text-text-primary text-[0.875rem] pl-9 pr-9 py-[0.55rem] rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent placeholder-text-muted/70"
-        placeholder="Search by name…"
+        placeholder="Search by first name or last name..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label="Search users by first or last name"

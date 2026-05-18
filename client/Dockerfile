@@ -7,10 +7,11 @@ RUN npm install
 
 COPY src ./src
 COPY tsconfig.json ./
+COPY tsconfig.node.json ./
 COPY vite.config.ts ./
 COPY index.html ./
 
-RUN npx vite build
+RUN npm run build
 
 # ─── Runtime stage (nginx) ───────────────────────────────────────────────────────
 FROM nginx:alpine AS runner

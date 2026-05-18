@@ -23,7 +23,7 @@ RUN npm install --omit=dev
 COPY --from=builder /app/dist ./dist
 
 # Data directory for SQLite
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data && chown -R node:node /app
 
 ENV NODE_ENV=production
 ENV PORT=3001
@@ -31,5 +31,7 @@ ENV DATABASE_PATH=/app/data/users.db
 
 EXPOSE 3001
 
+USER node
+
 # Seed DB if empty, then start server
-CMD ["sh", "-c", "node dist/seed.js && node dist/server.js"]
+CMD ["sh", "-c", "node dist/db/seed.js && node dist/server.js"]

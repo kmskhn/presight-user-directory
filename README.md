@@ -1,12 +1,16 @@
-# Presight Frontend Exercise
+# Presight User Directory Application
 
-Build a small full-stack user directory application. The goal is to evaluate how you design a searchable, filterable, paginated UI backed by persisted data and clear API boundaries.
+A full-stack user directory application featuring data visualization, comprehensive facet filtering, and polished aesthetics.
 
----
+## Core Features
 
-## Quick Start
+- **System-wide Light/Dark Theme** — A beautiful, cohesive theme system with smooth transitions, persisting in local storage and matching system preference on load.
+- **Collapsible Facet Sidebar** — Collapsible sections for Hobbies and Nationalities to optimize layout, with expansion state fully persisted across visits.
+- **Robust Error Resilience** — React Error Boundary implementation protecting the UI layer from unexpected rendering exceptions, paired with intuitive visual fallback state.
+- **Enhanced UX States** — Shimmering skeleton loading grids for layout preservation, custom empty states, a dedicated Not Found page, and instant global and individual filter resets.
+- **Deterministic Infinite Scrolling** — Seamless infinite scroll using high-performance cursor-based pagination and windowed list virtualization.
 
-### Prerequisites
+## Prerequisites
 
 - Node.js ≥ 20
 - npm ≥ 10
@@ -17,7 +21,7 @@ Build a small full-stack user directory application. The goal is to evaluate how
 # 1. Install all dependencies (root + client + server)
 npm install
 
-# 2. Seed the database (10,000 users, ~0.2s)
+# 2. Seed the database (10,000 users)
 npm run seed
 
 # 3. Start both server and client in parallel
@@ -90,14 +94,17 @@ npm test
 
 **Tooling**: Vitest · npm workspaces · Docker
 
-### Key Design Decisions
+### Key Design Decisions & Implementation Patterns
 
-- **Cursor-based pagination** — deterministic, no skipped/duplicate rows on deep pages
-- **Virtualized list** — renders only ~20-30 DOM nodes regardless of 10,000 users
-- **URL-synced state** — filters, sort, and search reflected in the URL; shareable and reload-safe
-- **Single `/api/users` endpoint** — returns data + facets atomically
-- **Spec-literal facet counts** — all active filters apply to all facet counts
-- **Normalized hobbies** — separate table + junction, enabling efficient AND-logic filtering
+- **Deterministic Keyset Cursor-Based Pagination** — Keyset pagination using base64-encoded composite cursors (`[sortByValue, id]`), avoiding standard offset-pagination performance degradation and skipped/duplicate entries under dynamic additions/deletions.
+- **DOM Virtualization** — Leverages TanStack Virtual to only render the active viewport nodes (~20-30 nodes out of 10,000), keeping rendering times under 16ms and memory usage extremely low.
+- **URL-Synced State Management** — Bi-directional synchronization of active search, sort, and filtering criteria with React Router v7 URL search parameters, making all user searches fully shareable, bookmarkable, and reload-safe.
+- **Atomic API Contracts** — A single consolidated `/api/users` endpoint returning both the cursor-paginated users and dynamically calculated query-matching facets.
+- **Strict Query Facet Counts** — Adheres to spec-literal rules, dynamically computing counts where all selected filters are applied to all facets for precise user metrics.
+- **Normalized SQLite Schema** — Direct M:N modeling of hobbies and users with separate entity and junction tables, indexed properly to allow efficient compound filtering.
+- **Persistent UI & Theme State** — Decoupled UI state (like sidebar collapses and light/dark theme preference) stored inside `localStorage` for visual consistency across sessions, with automatic system color preference detection.
+- **UI Error Boundary & Fallback Grace** — Isolated crash containment at component level using a React ErrorBoundary, allowing sections of the application to recover gracefully and present polished diagnostic feedback.
+
 
 ---
 

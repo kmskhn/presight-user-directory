@@ -1,13 +1,13 @@
 export function UserCardSkeleton() {
   return (
-    <div className="skeleton-card" aria-hidden="true">
-      <div className="skeleton skeleton-avatar" />
-      <div className="skeleton-lines">
-        <div className="skeleton" style={{ height: 14, width: '60%' }} />
-        <div className="skeleton" style={{ height: 12, width: '40%' }} />
-        <div style={{ display: 'flex', gap: '0.35rem', marginTop: '0.25rem' }}>
-          <div className="skeleton" style={{ height: 18, width: 60, borderRadius: 999 }} />
-          <div className="skeleton" style={{ height: 18, width: 50, borderRadius: 999 }} />
+    <div className="grid grid-cols-[52px_1fr] gap-3.5 items-center p-4 mx-5 bg-surface/30 border border-border/30 rounded-xl animate-pulse" aria-hidden="true">
+      <div className="w-[52px] h-[52px] rounded-full bg-border/40" />
+      <div className="flex flex-col gap-2">
+        <div className="h-3.5 bg-border/40 rounded-full w-3/5" />
+        <div className="h-3 bg-border/40 rounded-full w-2/5" />
+        <div className="flex gap-1.5 mt-1">
+          <div className="h-[18px] w-[60px] bg-border/40 rounded-full" />
+          <div className="h-[18px] w-[50px] bg-border/40 rounded-full" />
         </div>
       </div>
     </div>
@@ -17,7 +17,7 @@ export function UserCardSkeleton() {
 export function SkeletonList({ count = 8 }: { count?: number }) {
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '0.75rem 0' }}
+      className="flex flex-col gap-2.5 py-3"
       aria-busy="true"
       aria-label="Loading users"
     >
@@ -30,12 +30,12 @@ export function SkeletonList({ count = 8 }: { count?: number }) {
 
 export function FacetSkeleton({ count = 8 }: { count?: number }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} aria-hidden="true">
+    <div className="flex flex-col gap-2 animate-pulse" aria-hidden="true">
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.35rem 0.5rem' }}>
-          <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0 }} />
-          <div className="skeleton skeleton-facet" style={{ flex: 1 }} />
-          <div className="skeleton skeleton-facet" style={{ width: 28, borderRadius: 999 }} />
+        <div key={i} className="flex items-center gap-2.5 py-1.5 px-2">
+          <div className="w-4 h-4 rounded bg-border/40 shrink-0" />
+          <div className="flex-1 h-3.5 bg-border/40 rounded-full" />
+          <div className="w-7 h-3.5 bg-border/40 rounded-full" />
         </div>
       ))}
     </div>

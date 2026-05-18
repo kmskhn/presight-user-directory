@@ -75,13 +75,13 @@ export function UserList({
   return (
     <div
       ref={parentRef}
-      className="user-list-scroller"
+      className="flex-1 overflow-y-auto relative scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border pt-4"
       role="feed"
       aria-busy={isRefetching}
       aria-label="User directory"
     >
       <div
-        className="user-list-inner"
+        className="relative w-full"
         style={{ height: virtualizer.getTotalSize() }}
       >
         {showOverlay && <ListOverlay />}

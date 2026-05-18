@@ -58,7 +58,6 @@ function buildBaseFilter(query: UsersQueryParsed): {
 
 // Build filter WITHOUT the nationality clause — used for nationality facets so
 // that selecting one nationality keeps all others visible, enabling multi-select.
-// Search and hobby filters still apply.
 function buildFilterWithoutNationality(query: UsersQueryParsed): {
   whereClauses: string[];
   params: (string | number)[];
@@ -72,7 +71,7 @@ function buildFilterWithoutNationality(query: UsersQueryParsed): {
     params.push(term, term);
   }
 
-  // Nationality filter intentionally omitted
+  // Nationality filter intentionally omitted to allow cross-filtering
 
   const hobbyList = query.hobbies
     ? query.hobbies.split(',').map((h) => h.trim()).filter(Boolean)
@@ -196,51 +195,37 @@ export function queryFacets(query: UsersQueryParsed): {
   hobbies: FacetItem[];
   nationalities: FacetItem[];
 } {
-  // Hobby facets: ALL filters applied per spec (including nationality + hobby own dimension)
-  const { whereClauses: hobbyWhere, params: hobbyParams } = buildBaseFilter(query);
-  const hobbyWhereStr =
-    hobbyWhere.length > 0 ? `WHERE ${hobbyWhere.join(' AND ')}` : '';
+  // Per spec: The top 20 values and counts must reflect the currently applied text filter and selected filters.
+  const { whereClauses, params } = buildBaseFilter(query);
+  const whereStr =
+    whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
   const hobbySql = `
-    WITH all_hobbies AS (
-      SELECT name AS value FROM hobbies
+    SELECT h.name AS value, COUNT(DISTINCT uh.user_id) AS count
+    FROM user_hobbies uh
+    JOIN hobbies h ON h.id = uh.hobby_id
+    WHERE uh.user_id IN (
+      SELECT u.id FROM users u ${whereStr}
     )
-    SELECT a.value, COALESCE(c.count, 0) AS count
-    FROM all_hobbies a
-    LEFT JOIN (
-      SELECT h.name AS value, COUNT(DISTINCT uh.user_id) AS count
-      FROM user_hobbies uh
-      JOIN hobbies h ON h.id = uh.hobby_id
-      WHERE uh.user_id IN (
-        SELECT u.id FROM users u ${hobbyWhereStr}
-      )
-      GROUP BY h.name
-    ) c ON a.value = c.value
-    ORDER BY a.value ASC
+    GROUP BY h.name
+    ORDER BY count DESC
+    LIMIT 20
   `;
 
-  const hobbyRows = sqlite.prepare(hobbySql).all([...hobbyParams]) as RawFacetRow[];
+  const hobbyRows = sqlite.prepare(hobbySql).all([...params]) as RawFacetRow[];
 
-  // Nationality facets: exclude the nationality filter from their own query so
-  // that selecting one nationality keeps all others visible in the sidebar,
-  // enabling multi-select. Search and hobby filters still apply.
+  // Use the filter without nationality for the nationality facet to enable multi-select
   const { whereClauses: natWhere, params: natParams } = buildFilterWithoutNationality(query);
   const natWhereStr =
     natWhere.length > 0 ? `WHERE ${natWhere.join(' AND ')}` : '';
 
   const nationalitySql = `
-    WITH all_nats AS (
-      SELECT DISTINCT nationality AS value FROM users
-    )
-    SELECT a.value, COALESCE(c.count, 0) AS count
-    FROM all_nats a
-    LEFT JOIN (
-      SELECT nationality AS value, COUNT(*) AS count
-      FROM users u
-      ${natWhereStr}
-      GROUP BY nationality
-    ) c ON a.value = c.value
-    ORDER BY a.value ASC
+    SELECT u.nationality AS value, COUNT(*) AS count
+    FROM users u
+    ${natWhereStr}
+    GROUP BY u.nationality
+    ORDER BY count DESC
+    LIMIT 20
   `;
 
   const nationalityRows = sqlite

@@ -3,7 +3,9 @@ import { Users } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, useCallback, useEffect } from 'react';
 import { DirectoryPage } from './DirectoryPage.js';
+import { NotFoundPage } from './NotFoundPage.js';
 import { SearchInput } from '../components/SearchInput.js';
+import { ErrorBoundary } from '../components/ErrorBoundary.js';
 import { useFilterParams } from '../hooks/useFilterParams.js';
 import { useDebounce } from '../hooks/useDebounce.js';
 
@@ -42,13 +44,13 @@ function Header() {
   }, []);
 
   return (
-    <header className="app-header" role="banner">
-      <a href="/" className="app-header__logo" aria-label="Presight home">
-        <Users size={22} color="#8b5cf6" aria-hidden="true" />
+    <header className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-border flex items-center justify-between px-6 py-4" role="banner">
+      <a href="/" className="flex items-center gap-3 text-text-primary text-xl font-semibold no-underline" aria-label="Presight home">
+        <Users size={22} color="var(--color-accent)" aria-hidden="true" />
         <span>Presight</span>
       </a>
 
-      <div className="app-header__search">
+      <div className="w-full max-w-[400px]">
         <SearchInput value={searchInput} onChange={handleSearchChange} isPending={isPending} />
       </div>
     </header>
@@ -57,10 +59,11 @@ function Header() {
 
 function AppInner() {
   return (
-    <div className="app-layout">
+    <div className="flex flex-col min-h-screen bg-bg text-text-primary font-sans">
       <Header />
       <Routes>
-        <Route path="*" element={<DirectoryPage />} />
+        <Route path="/" element={<DirectoryPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
@@ -69,9 +72,11 @@ function AppInner() {
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppInner />
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <AppInner />
+        </BrowserRouter>
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }

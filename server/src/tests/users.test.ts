@@ -123,10 +123,10 @@ describe('GET /api/users', () => {
     expect(filteredHobbyCount).toBeLessThan(totalHobbyCount);
   });
 
-  it('facet counts have max 100 items', async () => {
+  it('facet counts have max 20 items', async () => {
     const res = await request.get('/api/users?limit=1').expect(200);
-    expect(res.body.facets.hobbies.length).toBeLessThanOrEqual(100);
-    expect(res.body.facets.nationalities.length).toBeLessThanOrEqual(100);
+    expect(res.body.facets.hobbies.length).toBeLessThanOrEqual(20);
+    expect(res.body.facets.nationalities.length).toBeLessThanOrEqual(20);
   });
 
   it('returns empty data array with no results', async () => {

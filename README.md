@@ -20,6 +20,7 @@ A full-stack user directory application featuring data visualization, comprehens
 
 - Node.js **20 LTS** or **22 LTS**
 - npm ≥ 10
+- **Docker Desktop** (Required if running via Docker Compose)
 
 > ⚠️ Node.js 24+ is not recommended because some native dependencies (such as `better-sqlite3`) may fail to compile.
 
@@ -184,7 +185,7 @@ Features:
 ## Start
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ---
